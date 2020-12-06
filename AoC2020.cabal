@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e2243cb72f4d1f6438b1b97184a88101a92596e977f06e57f332da3e8d178bce
+-- hash: 5a09e8e9bc4921c752e3bc965a3c81071d14de8a59371e8f2cd9de8e839179f0
 
 name:           AoC2020
 version:        0.1.0.0
@@ -37,6 +37,7 @@ library
       Day04b
       Day05a
       Day05b
+      Day06a
       Lib
   other-modules:
       Paths_AoC2020
@@ -72,6 +73,7 @@ test-suite AoC2020-test
       Day04bSpec
       Day05aSpec
       Day05bSpec
+      Day06aSpec
       Paths_AoC2020
   hs-source-dirs:
       test
