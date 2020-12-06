@@ -1,7 +1,7 @@
-module Day06aSpec
+module Day06bSpec
     where
 import Test.Hspec
-import Day06a
+import Day06b
 
 spec = do
     describe "collect" $ do
