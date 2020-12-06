@@ -9,7 +9,7 @@ collect = filter (/= [""])
         . groupBy (\g h -> (null g) == (null h))
 
 count :: [String] -> Int
-count = popCount . foldl (.|.) zeroBits . map binary
+count = popCount . foldl (.&.) (complement zeroBits) . map binary
 
 total :: [String] -> Int
 total = sum . map count . collect

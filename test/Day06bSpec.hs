@@ -21,8 +21,8 @@ spec = do
             binary "b" `shouldBe` 2
             binary "ad" `shouldBe` 9
     describe "count" $ do
-        it "counts the number of distinct letters in a group" $ do
-            count ["hello","world"] `shouldBe` 7 
+        it "counts the number of common letters in a group" $ do
+            count ["hello","world"] `shouldBe` 2 
     describe "total" $ do
         it "totalise the number of questions for all groups" $ do
             let p = ["abc"
@@ -40,8 +40,8 @@ spec = do
                     ,"a"
                     ,""
                     ,"b"]
-            total p `shouldBe` 11
+            total p `shouldBe` 6
     it "all of this should solve the puzzle" $ do
         p <- fmap lines $ readFile "./data/Day06input.txt"
         let r = (sum . map count . collect) p
-        r `shouldBe` 6878
+        r `shouldBe` 3464
