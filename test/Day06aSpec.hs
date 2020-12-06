@@ -12,12 +12,17 @@ spec = do
                      ,"foobar"
                      ,"qux"]
             collect ls `shouldBe`
-                ["helloworld"
-                ,"foobarqux"]
+                [["hello","world"]
+                ,["foobar","qux"]]
 
+    describe "binary" $ do
+        it "converts a string [a-z]* into an Int" $ do
+            binary "a" `shouldBe` 1 
+            binary "b" `shouldBe` 2
+            binary "ad" `shouldBe` 9
     describe "count" $ do
         it "counts the number of distinct letters in a line" $ do
-            count "helloworld" `shouldBe` 7 
+            count ["hello","world"] `shouldBe` 7 
     describe "total" $ do
         it "totalise the number of questions for all groups" $ do
             let p = ["abc"
