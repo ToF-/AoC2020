@@ -11,7 +11,7 @@ spec = do
 
     describe "firstNotSum" $ do
         it "tells the first number that is not a sum of 2 numbers amongst the n previous numbers" $ do
-            firstNotSum [42,17,4807,59,4824,9631,23,17] 3 `shouldBe` 23 
+            firstNotSum [42,17,4807,59,4824,9631,42+17+4807,17] 3 `shouldBe` 4866
             let ls = [35 ,20 ,15 ,25 ,47 ,40 ,62 ,55 ,65 ,95 ,102 ,117 ,150 ,182 ,127 ,219 ,299 ,277 ,309 ,576]
             firstNotSum ls 5 `shouldBe` 127
 
