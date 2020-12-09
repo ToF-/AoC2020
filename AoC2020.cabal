@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.2.
+-- This file has been generated from package.yaml by hpack version 0.34.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: adec514db0a7a2cbfec07f725d7b1dc4b99be1202b98e4ed76c3d83525d68cb3
+-- hash: 056c7bc615eb2bd0eb501ebf0c897f9c9e5393d7bcfb8fd59095408c625f6c02
 
 name:           AoC2020
 version:        0.1.0.0
@@ -43,6 +43,7 @@ library
       Day07b
       Day08a
       Day08b
+      Day09a
       Lib
   other-modules:
       Paths_AoC2020
@@ -84,6 +85,7 @@ test-suite AoC2020-test
       Day07bSpec
       Day08aSpec
       Day08bSpec
+      Day09aSpec
       Paths_AoC2020
   hs-source-dirs:
       test
