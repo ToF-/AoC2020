@@ -81,4 +81,4 @@ spec = do
             occupied (stabilize evolve input) `shouldBe` 37
     it "all of this should solve the puzzle" $ do
         input <- fmap lines $ readFile "data/Day11input.txt"
-        occupied (stabilize evolve input) `shouldBe` 0
+        occupied (stabilize evolve input) `shouldBe` 2346
