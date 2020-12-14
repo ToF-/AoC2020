@@ -16,8 +16,7 @@ dispatch = sort . snd . L.foldl dispatchBit (1,[0]) . reverse
         dispatchBit :: (Address,[Address]) -> Char -> (Address,[Address])
         dispatchBit (i,as) '0' = (i*2,as)
         dispatchBit (i,as) '1' = (i*2,L.map (+i) as)
-        dispatchBit (i,as) 'X' = (i*2,as >>= floating)
-            where floating a = [a+i,a]
+        dispatchBit (i,as) 'X' = (i*2,as >>= (\ad -> [ad+i,ad]))
 
 showAddress :: Address -> String
 showAddress = format . reverse . L.map intToDigit . digits 

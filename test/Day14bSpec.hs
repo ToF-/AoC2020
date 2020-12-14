@@ -106,4 +106,4 @@ spec = do
 
     it "all of this should solve the puzzle" $ do
         input <- fmap lines $ readFile "data/Day14input.txt"
-        solve input `shouldBe` 0
+        solve input `shouldBe` 5030603328768
