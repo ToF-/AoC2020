@@ -19,4 +19,4 @@ spec = do
         let schedule = interpret input
         let dept = uncurry departure schedule
         dept  `shouldBe` (643,5)
-        uncurry (*) dept  `shouldBe` 0
+        uncurry (*) dept  `shouldBe` 3215

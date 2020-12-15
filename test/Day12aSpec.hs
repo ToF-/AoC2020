@@ -109,4 +109,4 @@ spec = do
         commands <- fmap lines $ readFile "data/Day12input.txt"
         let p = ((0,0),east)
         let q = travel p commands
-        distance (fst q) `shouldBe` 0
+        distance (fst q) `shouldBe` 582
