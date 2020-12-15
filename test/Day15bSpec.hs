@@ -39,6 +39,6 @@ spec = do
             last  `shouldBe` 436
 
     it "all of this should solve the puzzle" $ do
-        solve 2020 [3,1,2] `shouldBe` 1836
-        solve 30000000 [20,9,11,0,1,2] `shouldBe` 0
+        solve 2020 [3,1,2] `shouldBe` 183
+        solve 30000000 [20,9,11,0,1,2] `shouldBe` 48568
 
