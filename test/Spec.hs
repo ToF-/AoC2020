@@ -2,5 +2,5 @@
 -- to detect and run all specs
 -- uncomment option, remove specific code below
 import Test.Hspec
-import Day16aSpec
+import Day16bSpec
 main = hspec spec
