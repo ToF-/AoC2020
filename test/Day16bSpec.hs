@@ -21,6 +21,54 @@ spec = do
             it "tells the tickets that have no invalid field" $ do
                 validTickets intervals tickets  `shouldBe` [[7,3,47]]
 
+        describe "impossible Fields" $ do
+            let fields = [(CL,(( 0,1),(4,19))),(RW,((0,5),(8,19))),(ST,((0,13),(16,19)))]
+            let yourTicket = [11,12,13]
+            let nearbyTickets= [[3,9,18]
+                               ,[15,1,5]
+                               ,[5,14,9]]
+            let allTickets = yourTicket : nearbyTickets
+            it "tells what field a value can't be" $ do
+                invalidForFields fields 11 `shouldBe` []
+                invalidForFields fields 15 `shouldBe` [ST]
+                impossibleFields fields allTickets `shouldBe`
+                    [[CL,ST],[ST],[]]
+
+    describe "bigger" $ do
+        let fieldIds = map toEnum [0..length intervals -1]
+        let fields = zip fieldIds intervals
+        let allTickets = validTickets intervals (yourTicket : nearbyTickets)
+        let allImpossibleFields = impossibleFields fields allTickets
+        let allPossibleFields = possibleFields fields allTickets
+        let allSingletons = singletons allPossibleFields
+        it "allImpossibleFields tells what field a value can't be" $ do
+            allImpossibleFields `shouldBe`
+                [[],[AP,AK,TR],[DL,DS,DP,DK,DD,DM,AL,AS,AP,AK,CL,DU,PR,ST,TR,TY],[AK],[DL,DS,DP,DK,DD,DM,AL,AS,AP,AK,CL,PR,ST,TR,TY],[AL,AP,AK,CL,PR,TR,TY],[AL,AP,AK,CL,PR,TR],[DL,DS,DK,DD,DM,AL,AS,AP,AK,CL,PR,ST,TR,TY],[AK,TR],[AL,AS,AP,AK,CL,PR,TR,TY],[DL,DK,DD,DM,AL,AS,AP,AK,CL,PR,ST,TR,TY],[DL,DS,DP,DK,DD,DM,AL,AS,AP,AK,CL,DU,PR,RW,ST,TR,TY,WG],[AL,AP,AK,TR],[DK,AL,AS,AP,AK,CL,PR,ST,TR,TY],[AL,AP,AK,CL,TR],[DL,DS,DP,DK,DD,DM,AL,AS,AP,AK,CL,DU,PR,RW,ST,TR,TY],[DL,DK,AL,AS,AP,AK,CL,PR,ST,TR,TY],[AL,AS,AP,AK,CL,PR,ST,TR,TY],[DL,DS,DP,DK,DD,DM,AL,AS,AP,AK,CL,DU,PR,RT,RW,ST,TR,TY,WG],[DL,DK,DM,AL,AS,AP,AK,CL,PR,ST,TR,TY]]
+        it "allPossibleFields tells what field a value can't be" $ do
+            allPossibleFields  `shouldBe` 
+                [[DL,DS,DP,DK,DD,DM,AL,AS,AP,AK,CL,DU,PR,RT,RW,ST,TR,TY,WG,ZN],[DL,DS,DP,DK,DD,DM,AL,AS,CL,DU,PR,RT,RW,ST,TY,WG,ZN],[RT,RW,WG,ZN],[DL,DS,DP,DK,DD,DM,AL,AS,AP,CL,DU,PR,RT,RW,ST,TR,TY,WG,ZN],[DU,RT,RW,WG,ZN],[DL,DS,DP,DK,DD,DM,AS,DU,RT,RW,ST,WG,ZN],[DL,DS,DP,DK,DD,DM,AS,DU,RT,RW,ST,TY,WG,ZN],[DP,DU,RT,RW,WG,ZN],[DL,DS,DP,DK,DD,DM,AL,AS,AP,CL,DU,PR,RT,RW,ST,TY,WG,ZN],[DL,DS,DP,DK,DD,DM,DU,RT,RW,ST,WG,ZN],[DS,DP,DU,RT,RW,WG,ZN],[RT,ZN],[DL,DS,DP,DK,DD,DM,AS,CL,DU,PR,RT,RW,ST,TY,WG,ZN],[DL,DS,DP,DD,DM,DU,RT,RW,WG,ZN],[DL,DS,DP,DK,DD,DM,AS,DU,PR,RT,RW,ST,TY,WG,ZN],[RT,WG,ZN],[DS,DP,DD,DM,DU,RT,RW,WG,ZN],[DL,DS,DP,DK,DD,DM,DU,RT,RW,WG,ZN],[ZN],[DS,DP,DD,DU,RT,RW,WG,ZN]]
+        it "allSingletons tells what fields are determined" $ do
+            allSingletons  `shouldBe` [ZN]
+
+        it "removeField removes a possible field from non-singleton field lists" $ do
+            removeField ZN [DU,RT,ZN] `shouldBe` [DU,RT]
+            removeField ZN [ZN] `shouldBe` [ZN]
+
+        it "narrow removes fields found in singletons from non-singleton field lists" $ do
+            narrow allPossibleFields  `shouldBe`
+                [[DL,DS,DP,DK,DD,DM,AL,AS,AP,AK,CL,DU,PR,RT,RW,ST,TR,TY,WG],[DL,DS,DP,DK,DD,DM,AL,AS,CL,DU,PR,RT,RW,ST,TY,WG],[RT,RW,WG],[DL,DS,DP,DK,DD,DM,AL,AS,AP,CL,DU,PR,RT,RW,ST,TR,TY,WG],[DU,RT,RW,WG],[DL,DS,DP,DK,DD,DM,AS,DU,RT,RW,ST,WG],[DL,DS,DP,DK,DD,DM,AS,DU,RT,RW,ST,TY,WG],[DP,DU,RT,RW,WG],[DL,DS,DP,DK,DD,DM,AL,AS,AP,CL,DU,PR,RT,RW,ST,TY,WG],[DL,DS,DP,DK,DD,DM,DU,RT,RW,ST,WG],[DS,DP,DU,RT,RW,WG],[RT],[DL,DS,DP,DK,DD,DM,AS,CL,DU,PR,RT,RW,ST,TY,WG],[DL,DS,DP,DD,DM,DU,RT,RW,WG],[DL,DS,DP,DK,DD,DM,AS,DU,PR,RT,RW,ST,TY,WG],[RT,WG],[DS,DP,DD,DM,DU,RT,RW,WG],[DL,DS,DP,DK,DD,DM,DU,RT,RW,WG],[ZN],[DS,DP,DD,DU,RT,RW,WG]]
+        it "narrowfix narrows the puzzle until fix result" $ do
+            narrowFix allPossibleFields `shouldBe`
+                [[AK],[AL],[RW],[TR],[DU],[AS],[TY],[DP],[AP],[ST],[DS],[RT],[CL],[DL],[PR],[WG],[DM],[DK],[ZN],[DD]]
+
+        it "let's find the position of the 6 fields starting with Departure" $ do
+            let fields = concat $ narrowFix allPossibleFields
+            let departureFields = filter (\(f,v) -> f `elem` [DL,DS,DP,DK,DD,DM]) $ zip fields yourTicket
+            departureFields `shouldBe` [(DP,61),(DS,89),(DL,179),(DM,139),(DK,173),(DD,167)]
+            product (map snd departureFields)  `shouldBe` 3902565915559
+
+
+
 intervals =[((48,885),(906,949))
            ,((28,420),(431,970))
            ,((45,112),(129,967))
