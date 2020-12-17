@@ -11,10 +11,72 @@ spec = do
 
     describe "zView" $ do
         it "show active cubes for a nxn plane on the z axis" $ do
-            let g = set (-2,2,0) $ set (-1,-1,0) initial
-            zView (0,0,0) 5 g `shouldBe` ["....."
-                                         ,".#..."
-                                         ,"....."
-                                         ,"....."
-                                         ,"#...."]
+            let g = set (-2,-2,0) $ set (-1,1,0) initial
+            zView 0 g `shouldBe` ["#..."
+                                 ,"...."
+                                 ,"...."
+                                 ,".#.."]
+
+    describe "evolve" $ do
+        it "generate active cube according to laws" $ do
+            let coords = [(0,-1,0),(1,0,0),(-1,1,0),(0,1,0),(1,1,0)]
+            let g = grid coords
+            zView 0 g `shouldBe` [".#."
+                                 ,"..#"
+                                 ,"###"]
+            let g' = evolve g
+            zView (-1) g' `shouldBe` 
+                ["#.."
+                ,"..#"
+                ,".#."]
+
+            zView 0 g' `shouldBe` 
+                ["#.#"
+                ,".##"
+                ,".#."]
+
+            zView 1 g' `shouldBe` 
+                ["#.."
+                ,"..#"
+                ,".#."]
+            let g'' = evolve $ evolve $ evolve g
+            zView 0 g''  `shouldBe` 
+                ["...#..."
+                ,"......."
+                ,"#......"
+                ,"......."
+                ,".....##"
+                ,".##.#.."
+                ,"...#..."]
+            zView 1 g''  `shouldBe` 
+                ["..#...."
+                ,"...#..."
+                ,"#......"
+                ,".....##"
+                ,".#...#."
+                ,"..#.#.."
+                ,"...#..."]
+            zView 2 g''  `shouldBe` 
+                ["##."
+                ,"###"
+                ,"..."]
+
+    describe "count" $ do
+        it "tells how many active element after n cycles" $ do
+            let coords = [(0,-1,0),(1,0,0),(-1,1,0),(0,1,0),(1,1,0)]
+            count 3 (grid coords) `shouldBe` 38
+            count 6 (grid coords) `shouldBe` 112
+
+    it "all of this should solve the puzzle" $ do
+
+        let p = ["...#..#."
+                ,"..##.##."
+                ,"..#....."
+                ,"....#..."
+                ,"#.##...#"
+                ,"####..##"
+                ,"...##.#."
+                ,"#.#.#..."]
+        let coords = [(x,y,0) | y <- [0..7], x <- [0..7], p!!y!!x == '#']
+        count 6 (grid coords) `shouldBe` 0
 
