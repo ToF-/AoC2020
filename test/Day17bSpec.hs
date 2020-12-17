@@ -1,7 +1,7 @@
-module Day17aSpec
+module Day17bSpec
     where
 import Test.Hspec
-import Day17a
+import Day17b
 
 spec = do
     describe "neighbors" $ do
@@ -78,5 +78,5 @@ spec = do
                 ,"...##.#."
                 ,"#.#.#..."]
         let coords = [(x,y,0) | y <- [0..7], x <- [0..7], p!!y!!x == '#']
-        count 6 (grid coords) `shouldBe` 247
+        count 6 (grid coords) `shouldBe` 2
 
