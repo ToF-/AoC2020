@@ -55,5 +55,5 @@ spec = do
 
     it "all of this should solve the puzzle" $ do
         input <- fmap lines (readFile "data/Day18input.txt")
-        sum (map eval input) `shouldBe` 0        
+        sum (map eval input) `shouldBe` 800602729153
 
