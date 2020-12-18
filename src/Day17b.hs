@@ -5,31 +5,47 @@ import Data.Set as S
 import Data.List.Split
 import Data.List as L
 
-type Coord = (Int,Int,Int)
+type Coord = (Int,Int,Int,Int)
 type Grid = S.Set Coord
 
 neighbors :: Coord -> [Coord]
-neighbors (x,y,z) = 
-    [(i,j,k) 
+neighbors (x,y,z,w) = 
+    [(i,j,k,l) 
     | i <- [x-1,x,x+1]
     , j <- [y-1,y,y+1]
     , k <- [z-1,z,z+1]
-    , (i,j,k) /= (x,y,z)]
+    , l <- [w-1,w,w+1]
+    , (i,j,k,l) /= (x,y,z,w)]
 
 initial :: Grid
 initial = S.empty
 
 grid :: [Coord] -> Grid
-grid coords = L.foldl (\g coord -> set coord g) initial coords
+grid = S.fromList
 
-zView :: Int -> Grid -> [String]
-zView z g = chunksOf (n+1) $
-    [ if S.member (x,y,z) g then '#' else '.' 
+activeZone :: Grid -> (Int,Int)
+activeZone g = (min-1,max+1)
+    where
+        min = minimum $ L.map (\f -> minimum $ L.map f coords) [x,y,z,w]
+        max = maximum $ L.map (\f -> maximum $ L.map f coords) [x,y,z,w]
+        coords = toList g
+
+
+x,y,z,w :: Coord -> Int
+
+x (a,b,c,d) = a
+y (a,b,c,d) = b
+z (a,b,c,d) = c
+w (a,b,c,d) = d
+
+zwView :: Int -> Int -> Grid -> [String]
+zwView z w g = chunksOf (n+1) $ 
+    [ if S.member (x,y,z,w) g then '#' else '.'
     | y <- [minY..minY+n]
     , x <- [minX..minX+n]]
         where
             (minX,minY,n) = zPlane coords 
-            coords = [(i,j) | (i,j,k) <- toList g, k == z]
+            coords = [(i,j) | (i,j,k,l) <- toList g, k == z, l == w]
 
 zPlane :: [(Int,Int)] -> (Int,Int,Int)
 zPlane []     = (0,0,0) 
@@ -41,15 +57,7 @@ zPlane coords = (minX,minY,n)
         maxY = L.maximum $ L.map snd coords
         n = max (maxX-minX) (maxY-minY)
 
-set :: Coord -> Grid -> Grid
-set = S.insert 
-
-unset :: Coord -> Grid -> Grid
-unset = S.delete
-
-
-
-evolve :: Grid -> Grid
+evolve :: Grid -> Grid 
 evolve = fromList . newGeneration
 
 newGeneration :: Grid -> [Coord]
@@ -59,19 +67,10 @@ newGeneration g = L.filter
 
 allElements :: Grid -> [Coord]
 allElements g | g == S.empty = []
-allElements g = [(i,j,k) | i <- range, j <- range, k <- range]
+allElements g = [(i,j,k,l) | i <- range, j <- range, k <- range, l <- range]
     where 
-        range = [min-1..max+1]
-        min = minimum [minimum $ (L.map x) coords
-                      ,minimum $ (L.map y) coords
-                      ,minimum $ (L.map z) coords]
-        max = maximum [maximum $ (L.map x) coords
-                      ,maximum $ (L.map y) coords
-                      ,maximum $ (L.map z) coords]
-        x (x,_,_) = x
-        y (_,y,_) = y
-        z (_,_,z) = z
-        coords = toList g
+        range = [min..max]
+        (min,max) = activeZone g
 
 activeNeighbors :: Coord -> Grid -> Int
 activeNeighbors coord grid = 
@@ -85,11 +84,3 @@ generate _ _ = False
 
 count :: Int -> Grid -> Int
 count n g = length $ toList $ last $ L.take (n+1) $ iterate evolve g
-
-pView :: Int -> Grid -> IO ()
-pView n g = putStrLn $ unlines $ zView n g
-
-i :: [Coord]
-i = [(1,-2,0),(2,-1,0),(0,0,0),(1,0,0),(2,0,0)]
-
-
