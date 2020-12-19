@@ -45,4 +45,4 @@ spec = do
     it "all of this should solve the puzzle" $ do
         input <- fmap lines (readFile "data/Day18input.txt")
         print $ catMaybes $ (map (parse expression) input)
-        sum (catMaybes (map (parse expression) input)) `shouldBe` 92173001631556
+        sum (catMaybes (map (parse expression) input)) `shouldBe` 92173009047076
