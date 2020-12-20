@@ -6,27 +6,27 @@ type Tile = (Int,[String])
 type Column = [[String]]
 type Mosaic = [Column]
 
-match :: [String] -> [String] -> Bool
-match t u = last t == head u
+match :: Tile -> Tile -> Bool
+match (_,t) (_,u) = last t == head u
 
-allMatch :: Column -> Bool
-allMatch ts = and $ zipWith match ts (tail ts)
 
 rotate = reverse . transpose
 vertFlip = map reverse
 horzFlip = reverse
 
-transformations :: [String] -> [[String]]
-transformations t = map ($t) [ id
-                             , rotate
-                             , vertFlip
-                             , horzFlip
-                             , horzFlip . rotate
-                             , vertFlip . rotate
-                             , horzFlip . vertFlip
-                             , horzFlip . vertFlip . rotate]
 
-possibleMatches :: [String] -> [String] -> [([String],[String])]
+transformations :: Tile -> [Tile]
+transformations (i,t) = map (\f -> (i,f t)) 
+                            [ id
+                            , rotate
+                            , vertFlip
+                            , horzFlip
+                            , horzFlip . rotate
+                            , vertFlip . rotate
+                            , horzFlip . vertFlip
+                            , horzFlip . vertFlip . rotate]
+
+possibleMatches :: Tile -> Tile -> [(Tile,Tile)]
 possibleMatches t u = 
     [(tt,tu) 
     | tt <- transformations t
@@ -34,8 +34,16 @@ possibleMatches t u =
     , t /= u
     , tt `match` tu]
 
-matchCount :: [String] -> [[String]] -> Int
+matchCount :: Tile -> [Tile] -> Int
 matchCount t ts = length [u | u <- ts, u /= t, not $ null (possibleMatches t u)]
 
 corners :: [Tile] -> [Tile]
 corners ts = [t | t <- ts, (matchCount t ts) == 2]
+
+interpret :: [String] -> [Tile]
+interpret ss = map readTile gs
+    where
+        gs = groupBy (\s t -> not (':' `elem` t))  (filter (not . null) ss)
+        readTile ss = (number (head ss),tail ss) 
+            where
+                number  = read . drop 5 . init
