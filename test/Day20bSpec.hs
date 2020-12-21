@@ -6,6 +6,10 @@ import Day20b
 import Data.List
 import Data.Maybe
 
+seaMonster = 
+    ["                  # "
+    ,"#    ##    ##    ###"
+    ," #  #  #  #  #  #   "]
 
 assembly = 
     [[2953,1801,1579,2069,1607,2767,1861,3833,2393,3637,2281,1091]
@@ -32,6 +36,12 @@ specb = do
                         ,(9,words "3GH 5IJ 7KL")]
 
     let ts = [t00,t01,t02,t10,t11,t12,t20,t21,t22]
+
+    describe "coordsForSharp" $ do
+        it "tells which parts of a picture contain sharps" $ do
+            coordsForSharps seaMonster  `shouldBe` 
+                [(0,18),(1,0),(1,5),(1,6),(1,11),(1,12),(1,17),(1,18),(1,19),(2,1),(2,4),(2,7),(2,10),(2,13),(2,16)]
+
 
     describe "match" $ do
         it "tells if last line of a tile matches first line of a tile" $ do
@@ -149,6 +159,29 @@ specb = do
             length (head picture)  `shouldBe` 8 * 12
             length picture `shouldBe` 8 * 12
             putStrLn (unlines picture)
+
+    describe "search" $ do
+        it "searches for a shape in a picture" $ do
+            let picture = [replicate 27 '.'] ++ (map (\s -> "..#.." ++ s ++ "##") seaMonster) ++ [replicate 27 '#']
+            let doublePicture = map (\s -> s ++ s) (picture ++ picture)
+            let messedPicture = replicate 20 (replicate 20 '#')
+
+            putStrLn (unlines picture)
+            putStrLn (unlines doublePicture)
+            putStrLn (unlines messedPicture)
+            search seaMonster picture `shouldBe` [(1,5)]
+            search seaMonster doublePicture `shouldBe` [(1,5),(1,32),(6,5),(6,32)]
+            search seaMonster messedPicture `shouldBe` [(0,0),(1,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0),(8,0),(9,0),(10,0),(11,0),(12,0),(13,0),(14,0),(15,0),(16,0),(17,0)]
+
+        it "can find the sea monsters in the original picture" $ do
+            input <- fmap lines $ readFile "data/Day20input.txt"
+            let tiles =interpret input 
+            let picture = recompose (image tiles)
+            search seaMonster picture `shouldBe` []
+
+            map (search seaMonster) (map (\f -> f picture) transformationFunctions) `shouldBe` []
+
+            
 
     describe "image" $ do
         it "tells which tiles form the image" $ do
