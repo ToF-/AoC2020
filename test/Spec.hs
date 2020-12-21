@@ -3,5 +3,7 @@
 -- uncomment option, remove specific code below
 import Test.Hspec
 import Day20aSpec
+import Day20bSpec
 main = hspec $ do
-    spec
+    speca
+    specb

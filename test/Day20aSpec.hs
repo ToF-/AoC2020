@@ -5,7 +5,7 @@ import Test.Hspec
 import Day20a
 import Data.List
 
-spec = do
+speca = do
     let [t00,t01,t02] = [(1,words "ABC DEF GHI")
                         ,(2,words "CUV FWX IYZ")
                         ,(3,words "V89 XAB ZCD")]
