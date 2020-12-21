@@ -34,6 +34,11 @@ possibleMatches t u =
     , t /= u
     , tt `match` tu]
 
+matchedTile :: Tile -> Tile -> [Tile]
+matchedTile t u = tt 
+    where
+    tt = map fst (possibleMatches t u)
+
 matchCount :: Tile -> [Tile] -> Int
 matchCount t ts = length [u | u <- ts, u /= t, not $ null (possibleMatches t u)]
 

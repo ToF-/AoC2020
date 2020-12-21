@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 787e8fdb7c7b232aa3e1df9b223e23917d04c810bd00fc692f07e5dce9555b48
+-- hash: 92842b3ad060ee604c34cfe75f3a13aaa9006f1f9bf38a5e03a11b480107e714
 
 name:           AoC2020
 version:        0.1.0.0
@@ -72,7 +72,7 @@ library
       Paths_AoC2020
   hs-source-dirs:
       src
-  ghc-options: -freverse-errors -Wall -Werror -Wincomplete-patterns
+  ghc-options: -freverse-errors -Werror -Wincomplete-patterns
   build-depends:
       base >=4.7 && <5
     , containers
