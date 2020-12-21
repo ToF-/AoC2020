@@ -4,6 +4,7 @@ module Day20bSpec
 import Test.Hspec
 import Day20b
 import Data.List
+import Data.Maybe
 
 
 assembly = 
@@ -23,10 +24,10 @@ specb = do
     let [t00,t01,t02] = [(1,words "ABC DEF GHI")
                         ,(2,words "CUV FWX IYZ")
                         ,(3,words "V89 XAB ZCD")]
-    let [t10,t11,t12] = [(4,words "GHI IJK LtN")
+    let [t10,t11,t12] = [(4,words "GHI IJK LTN")
                         ,(5,words "IYZ K01 N23")
                         ,(6,words "ZCD 1EF 3GH")]
-    let [t20,t21,t22] = [(7,words "LtN OPQ RST")
+    let [t20,t21,t22] = [(7,words "LTN OPQ RST")
                         ,(8,words "N23 Q45 T67")
                         ,(9,words "3GH 5IJ 7KL")]
 
@@ -56,10 +57,11 @@ specb = do
         describe "match count" $ do
             it "tells how mamy possible tiles a tiles matches" $ do
                 matchCount t1 [t1,t2,t3] `shouldBe` 1
-    describe "matchedTile" $ do
-        it "tells what specific transformation of a tile matches" $ do
-            matchedTile t00 t01 `shouldBe` [(1,["ADG","BEH","CFI"])]
-            
+
+    describe "originalRow" $ do
+       it "tells the exact shapes of a row" $ do
+           originalRow [t00,t01,t02] `shouldBe` 
+               Just [(1,["ABC","DEF","GHI"]),(2,["CUV","FWX","IYZ"]),(3,["V89","XAB","ZCD"])]
 
     describe "matchers" $ do
         it "tells the tiles matching a tile" $ do
@@ -120,13 +122,43 @@ specb = do
             let result = map (map fst) (nextRows row0 tiles)
             result `shouldBe` [[1867],[3121],[3851],[3881],[3463],[3343],[3607],[1999],[3793],[2557],[3023],[3251]]
 
+    describe "clip" $ do
+        it "removes borders from a list of strings" $ do
+            let tile = words "ABCDE FGHIJ KLMNO PQRST UVWXY"
+            clip tile  `shouldBe` words "GHI LMN QRS"
+
+    describe "assemble" $ do
+        it "reassemble pieces from a list of pieces" $ do
+            let tts = [[t00,t01,t02],[t10,t11,t12],[t20,t21,t22]]
+            let pss = map (map snd) tts
+            concatMap assemble pss `shouldBe` 
+                ["ABCCUVV89","DEFFWXXAB","GHIIYZZCD","GHIIYZZCD","IJKK011EF","LTNN233GH","LTNN233GH","OPQQ455IJ","RSTT677KL"]
+
+            let tts = [[t00,t01],[t10,t11],[t20,t21]]
+            let pss = map (map snd) tts
+            concatMap assemble pss `shouldBe` 
+                ["ABCCUV","DEFFWX","GHIIYZ","GHIIYZ","IJKK01","LTNN23","LTNN23","OPQQ45","RSTT67"]
+
+    describe "recompose" $ do
+        it "creates the original image from original tiles in correct shape" $ do
+            recompose (image ts) `shouldBe` words "EWA J0E P4I"
+        it "can recompose the image from the puzzle" $ do
+            input <- fmap lines $ readFile "data/Day20input.txt"
+            let tiles =interpret input 
+            let picture = recompose (image tiles)
+            length (head picture)  `shouldBe` 8 * 12
+            length picture `shouldBe` 8 * 12
+            putStrLn (unlines picture)
+
     describe "image" $ do
         it "tells which tiles form the image" $ do
             map (map fst) (image ts) `shouldBe` [[1,2,3],[4,5,6],[7,8,9]]
+
         it "tells rows of the input puzzle" $ do
             input <- fmap lines $ readFile "data/Day20input.txt"
             let tiles =interpret input 
             let result = image tiles
+
             map (map fst) result `shouldBe` 
                 [[2953,1801,1579,2069,1607,2767,1861,3833,2393,3637,2281,1091]
                 ,[1867,3121,3851,3881,3463,3343,3607,1999,3793,2557,3023,3251]
@@ -140,6 +172,12 @@ specb = do
                 ,[1483,1381,2963,3739,2843,2999,2113,1823,3919,3457,3371,1597]
                 ,[3407,3719,3467,1223,3677,3593,1361,1987,3499,3673,3461,1453]
                 ,[1049,2677,3623,2251,2521,1789,2011,3257,2089,1997,1913,1709]]
+
+        it "tells original rows of the input puzzle" $ do
+            input <- fmap lines $ readFile "data/Day20input.txt"
+            let tiles =interpret input 
+            let result = catMaybes (map originalRow (image tiles))
+            sum (map length result) `shouldBe` 144
 
     describe "interpret" $ do
         it "interpret input as a list of tiles" $ do

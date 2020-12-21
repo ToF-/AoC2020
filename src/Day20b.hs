@@ -9,7 +9,6 @@ type Mosaic = [Column]
 match :: Tile -> Tile -> Bool
 match (_,t) (_,u) = last t == head u
 
-
 rotate,vertFlip,horzFlip :: [[a]] -> [[a]]
 rotate = reverse . transpose
 vertFlip = map reverse
@@ -34,10 +33,32 @@ possibleMatches t u =
     , t /= u
     , tt `match` tu]
 
-matchedTile :: Tile -> Tile -> [Tile]
-matchedTile t u = tt 
+clip ::[String] -> [String] 
+clip = tail . init . (map (tail . init))
+
+recompose :: [[Tile]] -> [String]
+recompose tts = concatMap recomposeRow tts
     where
-    tt = map fst (possibleMatches t u)
+        recomposeRow :: [Tile] -> [String]
+        recomposeRow ts = assemble (map (clip . snd) ts)
+
+assemble :: [[String]] -> [String]
+assemble r = [concat 
+                [r!!i!!j | i<-[0..length r -1]] 
+             | j <- [0..length(head r)-1]]
+
+originalRow :: [Tile] -> Maybe [Tile]
+originalRow ts = find (\l -> length l == length ts) $ foldl discoverRow [] ts
+    where
+        discoverRow :: [[Tile]] -> Tile -> [[Tile]]
+        discoverRow [] t = map return $ transformations t
+        discoverRow tts t = tts >>= nextTile t
+
+nextTile :: Tile -> [Tile] -> [[Tile]]
+nextTile u rs = [ rs ++ [tu] | tu <- (transformations u), hmatch (last rs) tu]
+
+hmatch :: Tile -> Tile -> Bool
+hmatch (_,tt) (_,tu) = map last tt == map head tu
 
 matchCount :: Tile -> [Tile] -> Int
 matchCount t ts = length [u | u <- ts, u /= t, not $ null (possibleMatches t u)]
